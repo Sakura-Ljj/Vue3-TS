@@ -1,8 +1,8 @@
 /*
  * @Author: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
  * @Date: 2024-06-18 16:56:43
- * @LastEditors: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
- * @LastEditTime: 2024-06-25 11:00:33
+ * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
+ * @LastEditTime: 2024-12-10 11:43:37
  * @FilePath: \Vue3-ts\src\routers\index.ts
  * @Description:
  */
@@ -17,14 +17,13 @@ const router = createRouter({
 	strict: false // 是否禁止尾部斜杠
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 	const userStore = useAuthStore()
 
 	// 鉴权
-
 	// 检测有没有菜单列表, 没有则重新请求菜单列表并添加动态路由
 	if (!userStore.authMenuListGet.length) {
-		initDyamicRouter()
+		await initDyamicRouter()
 		return next({ ...to, replace: true })
 	}
 

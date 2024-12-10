@@ -1,8 +1,8 @@
 /*
  * @Author: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
  * @Date: 2024-05-20 11:50:33
- * @LastEditors: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
- * @LastEditTime: 2024-06-28 15:28:41
+ * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
+ * @LastEditTime: 2024-12-10 10:51:38
  * @FilePath: \Vue3-ts\vite.config.ts
  * @Description:
  */
@@ -61,6 +61,15 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@': pathSrc
+		}
+	},
+
+	server: {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:3000',
+				changeOrigin: true
+			}
 		}
 	}
 })
