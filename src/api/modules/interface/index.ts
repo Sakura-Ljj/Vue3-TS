@@ -13,3 +13,5 @@ export namespace User {
 		email: string
 	}
 }
+
+export namespace Auth {}
