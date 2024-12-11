@@ -2,7 +2,7 @@
  * @Author: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
  * @Date: 2024-06-19 14:58:41
  * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
- * @LastEditTime: 2024-10-08 17:52:02
+ * @LastEditTime: 2024-12-10 14:41:12
  * @FilePath: \Vue3-ts\src\typings\global.d.ts
  * @Description:
  */
@@ -53,4 +53,10 @@ declare namespace CommonTable {
 		isShow: Boolean
 		selectable?: (row: any) => boolean
 	}
+}
+
+type ResPonseData<T> = {
+	code: number
+	data: T
+	msg: string
 }
