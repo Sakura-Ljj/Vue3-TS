@@ -1,8 +1,8 @@
 /*
  * @Author: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
  * @Date: 2024-06-19 15:28:51
- * @LastEditors: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
- * @LastEditTime: 2024-06-27 15:41:22
+ * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
+ * @LastEditTime: 2024-12-31 11:51:27
  * @FilePath: \Vue3-ts\src\utils\util.ts
  * @Description:
  */
@@ -35,4 +35,12 @@ export function getAllbreadcrunvList(menuList: Menu.MenuOptions[], result: { [ke
 		if (item.children?.length) getAllbreadcrunvList(item.children, result, result[item.path])
 	})
 	return result
+}
+
+export function formatUrl(url: string, params: { [key: string]: any }) {
+	const formatParams: string[] = []
+	Object.keys(params).forEach(key => {
+		formatParams.push(`${key}=${params[key]}`)
+	})
+	return `${url}?${formatParams.join('&')}`
 }

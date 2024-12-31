@@ -1,3 +1,11 @@
+<!--
+ * @Author: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
+ * @Date: 2024-07-16 14:32:17
+ * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
+ * @LastEditTime: 2024-12-31 16:00:48
+ * @FilePath: \Vue3-ts\src\page\role\userRole\index.vue
+ * @Description: 
+-->
 <template>
 	<CommonTable
 		:table-columns="tableColumns"
@@ -10,12 +18,12 @@
 		ref="commonTableRef"
 	>
 		<template #searchForm="{ formState }">
-			<el-form-item label="姓名" prop="name">
-				<el-input v-model="formState.name" class="input-width" placeholder="请输入姓名" />
+			<el-form-item label="姓名" prop="username">
+				<el-input v-model="formState.username" class="input-width" placeholder="请输入姓名" />
 			</el-form-item>
-			<el-form-item label="职位" porp="position">
-				<el-select v-model="formState.position" placeholder="请选择用户职位" class="input-width" clearable>
-					<el-option v-for="item in positionOptions" :key="item.value" :label="item.label" :value="item.value" />
+			<el-form-item label="职位" porp="role">
+				<el-select v-model="formState.role" placeholder="请选择用户职位" class="input-width" clearable>
+					<el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value" />
 				</el-select>
 			</el-form-item>
 			<el-form-item label="账号状态" prop="status">
@@ -28,14 +36,14 @@
 			</el-form-item>
 		</template>
 		<template #tableHeader>
-			<el-button type="primary" icon="CirclePlus" @click="dialogFormVisible = true">新建用户</el-button>
+			<el-button type="primary" icon="CirclePlus" @click="showAddUserDialog">新建用户</el-button>
 			<el-button type="primary" icon="Delete" @click="batchDel">批量删除</el-button>
 			<el-button type="primary" icon="Download">导出用户数据</el-button>
 		</template>
 
 		<template #bodyCell="{ row, column }">
-			<div v-if="column.property === 'position'">
-				{{ POSITION_MAP[row.position] }}
+			<div v-if="column.property === 'role'">
+				{{ POSITION_MAP[row.role] }}
 			</div>
 			<div v-if="column.property === 'sex'">
 				{{ SEX_MAP[row.sex] }}
@@ -45,7 +53,7 @@
 			</div>
 			<div v-if="column.property === 'operate'">
 				<el-button type="primary" link icon="View"> 查看 </el-button>
-				<el-button type="primary" link icon="Edit"> 编辑 </el-button>
+				<el-button type="primary" link icon="Edit" @click="showEditUserDialog(row)"> 编辑 </el-button>
 				<el-button type="primary" link icon="Refresh"> 重置密码 </el-button>
 				<el-popover trigger="click" :visible="row.delVisible">
 					<template #reference>
@@ -53,7 +61,7 @@
 					</template>
 					<div class="tw-mb-2">确认删除?</div>
 					<div class="tw-flex">
-						<el-button type="primary" size="small" @click="row.delVisible = false"> 确认 </el-button>
+						<el-button type="primary" size="small" @click="delUserById(row)"> 确认 </el-button>
 						<el-button size="small" @click="row.delVisible = false"> 取消 </el-button>
 					</div>
 				</el-popover>
@@ -61,29 +69,32 @@
 		</template>
 	</CommonTable>
 
-	<el-dialog v-model="dialogFormVisible" title="新增用户" width="500">
-		<el-form :model="userForm" label-width="auto">
-			<el-form-item label="姓名">
-				<el-input v-model="userForm.name" autocomplete="off" placeholder="请填写姓名" />
+	<el-dialog v-model="dialogFormVisible" title="新增用户" width="500" @closed="dialogClosed">
+		<el-form :model="userForm" label-width="auto" ref="formRef">
+			<el-form-item label="姓名" prop="username">
+				<el-input v-model="userForm.username" autocomplete="off" placeholder="请填写姓名" />
 			</el-form-item>
-			<el-form-item label="职务">
-				<el-select v-model="userForm.position" placeholder="请选择职务">
-					<el-option :label="item.label" :value="item.value" v-for="item in positionOptions" :key="item.value" />
+			<el-form-item label="职务" prop="role">
+				<el-select v-model="userForm.role" placeholder="请选择职务">
+					<el-option :label="item.label" :value="item.value" v-for="item in roleOptions" :key="item.value" />
 				</el-select>
 			</el-form-item>
-			<el-form-item label="性别">
+			<el-form-item label="性别" prop="sex">
 				<el-radio-group v-model="userForm.sex">
 					<el-radio :value="item.value" v-for="item in sexOptions" :key="item.value">{{ item.label }}</el-radio>
 				</el-radio-group>
 			</el-form-item>
-			<el-form-item label="年龄">
+			<el-form-item label="年龄" prop="age">
 				<el-input-number v-model="userForm.age" :min="1" controls-position="right" />
 			</el-form-item>
-			<el-form-item label="身份证号">
+			<el-form-item label="身份证号" prop="idNumber">
 				<el-input v-model="userForm.idNumber" autocomplete="off" placeholder="请填写身份证号" />
 			</el-form-item>
-			<el-form-item label="邮箱">
+			<el-form-item label="邮箱" prop="email">
 				<el-input v-model="userForm.email" autocomplete="off" placeholder="请填写邮箱" />
+			</el-form-item>
+			<el-form-item label="账号状态" prop="status">
+				<el-switch v-model="userForm.status" />
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -98,28 +109,24 @@
 <script setup lang="ts">
 import { POSITION_MAP, SEX_MAP, ACCOUNT_STATUS_MAP } from '@/config'
 import CommonTable from '@/components/commonTable/index.vue'
-import { getUserList, addUser, delUser } from '@/api/modules/user'
+import { getUserList, addUser, delUser, editUser } from '@/api/modules/user'
 import { ref } from 'vue'
 import { User } from '@/api/modules/interface'
-
-interface SearchParamData {
-	name: string
-	position: string
-	status: number | null
-	createTime: string
-}
+import { FormInstance } from 'element-plus'
 
 const dialogFormVisible = ref(false)
-
 const commonTableRef = ref()
+const formRef = ref<FormInstance>()
+const editId = ref('')
 
-const userForm = ref<User.addUserParams>({
-	name: '',
-	position: '',
+const userForm = reactive<User.AddUserParams>({
+	username: '',
+	role: '',
 	sex: 0,
 	age: 1,
 	idNumber: '',
-	email: ''
+	email: '',
+	status: true
 })
 
 const tableColumns: CommonTable.TableColumns[] = [
@@ -129,12 +136,12 @@ const tableColumns: CommonTable.TableColumns[] = [
 		width: '200'
 	},
 	{
-		prop: 'name',
+		prop: 'username',
 		label: '用户姓名',
 		width: '200'
 	},
 	{
-		prop: 'position',
+		prop: 'role',
 		label: '职位',
 		width: '150'
 	},
@@ -181,7 +188,7 @@ const tableColumns: CommonTable.TableColumns[] = [
 	}
 ]
 
-const positionOptions = [
+const roleOptions = [
 	{
 		label: '老板',
 		value: 'Boss'
@@ -222,10 +229,10 @@ const sexOptions = [
 	}
 ]
 
-const searchParam: SearchParamData = {
-	name: '',
-	position: '',
-	status: null,
+const searchParam: User.ReqUserParams = {
+	username: '',
+	role: '',
+	status: '',
 	createTime: ''
 }
 
@@ -240,9 +247,50 @@ const pageable: CommonTable.PageableProps = {
 	pageSize: 20
 }
 
+const dialogClosed = () => {
+	Object.assign(userForm, {
+		username: '',
+		role: '',
+		sex: 0,
+		age: 1,
+		idNumber: '',
+		email: '',
+		status: true
+	})
+}
+
 const submit = async () => {
-	await addUser(userForm.value)
+	if (editId.value) {
+		const updateInfo: User.EditUserParams = {
+			id: editId.value,
+			...userForm
+		}
+		await editUser(updateInfo)
+		ElMessage.success('修改成功')
+	} else {
+		await addUser(userForm)
+		ElMessage.success('添加成功')
+	}
 	commonTableRef.value.reset()
+	dialogFormVisible.value = false
+}
+
+const showAddUserDialog = () => {
+	editId.value = ''
+	dialogFormVisible.value = true
+}
+
+const showEditUserDialog = async (item: User.UserItem) => {
+	dialogFormVisible.value = true
+	Object.assign(userForm, { ...item, status: !!item.status })
+	editId.value = item.id
+}
+
+const delUserById = async (item: User.UserItem) => {
+	await delUser([item.id])
+	commonTableRef.value.reset()
+	item.delVisible = false
+	ElMessage.success('删除成功')
 }
 
 const batchDel = () => {
@@ -251,7 +299,7 @@ const batchDel = () => {
 		return
 	}
 
-	const ids = commonTableRef.value.multipleSelection.map((item: any) => item.id)
+	const ids = commonTableRef.value.multipleSelection.map((item: User.UserItem) => item.id)
 	ElMessageBox.confirm(`是否删除ID为${ids.join('、')}的数据`, '确认删除', {
 		confirmButtonText: '确认',
 		cancelButtonText: '取消'
@@ -259,6 +307,7 @@ const batchDel = () => {
 		.then(async () => {
 			await delUser(ids)
 			commonTableRef.value.reset()
+			ElMessage.success('删除成功')
 		})
 		.catch(() => {})
 }

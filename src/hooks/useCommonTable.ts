@@ -2,8 +2,8 @@
  * @Author: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
  * @Date: 2024-07-16 14:32:07
  * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
- * @LastEditTime: 2024-09-27 11:13:53
- * @FilePath: \Vue3-ts\src\hooks\userCommonTable.ts
+ * @LastEditTime: 2024-12-31 09:59:54
+ * @FilePath: \Vue3-ts\src\hooks\useCommonTable.ts
  * @Description:
  */
 import { reactive, toRefs } from 'vue'
@@ -34,9 +34,9 @@ export const useCommonTable = (
 		// const limit = state.paginationParams.pageSize
 		const sliceLimit = state.paginationParams.currentPage * state.paginationParams.pageSize
 		// 接入api获取表格数据
-		const { tableData, totals } = await api({ offset, limit: sliceLimit })
+		const { list, totals } = await api({ offset, limit: sliceLimit, ...searchParam })
 
-		state.tableData = tableData
+		state.tableData = list
 		state.paginationParams.totals = totals
 	}
 

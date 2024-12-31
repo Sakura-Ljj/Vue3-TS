@@ -6,9 +6,9 @@
  * @FilePath: \Vue3-ts\src\api\axios\index.ts
  * @Description:
  */
-import axios, { AxiosInstance } from 'axios'
+import axios, { Axios } from 'axios'
 
-const instance: AxiosInstance = axios.create({
+const instance: Axios = axios.create({
 	baseURL: '/api', // 这里直接配置服务器请求地址(http://localhose:3000)代表直接请求, 会产生跨域问题
 	headers: {}, // 添加自定义请求头
 	withCredentials: true
@@ -37,8 +37,8 @@ instance.interceptors.response.use(
 			request
 		}
 		if (data.code !== 200) {
-			ElMessage.error(data.msg)
-			return Promise.reject(data)
+			ElMessage.error(data?.msg || '服务错误, 请稍后重试')
+			return Promise.reject(data || '服务错误, 请稍后重试')
 		}
 		return {
 			resultConfig,
