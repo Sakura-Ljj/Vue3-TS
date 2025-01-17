@@ -52,4 +52,9 @@ export namespace User {
 	}
 }
 
-export namespace Auth {}
+export namespace Login {
+	export interface LoginServerParams {
+		account: string
+		password: string
+	}
+}
