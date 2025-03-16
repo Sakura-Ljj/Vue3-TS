@@ -1,9 +1,9 @@
 /*
  * @Author: TENCENT\v_jnnjieluo v_jnnjieluo@tencent.com
  * @Date: 2024-06-19 15:28:51
- * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
- * @LastEditTime: 2024-12-31 11:51:27
- * @FilePath: \Vue3-ts\src\utils\util.ts
+ * @LastEditors: Sakura 1430008132@qq.com
+ * @LastEditTime: 2025-02-26 16:48:17
+ * @FilePath: \Vue3-TS\src\utils\util.ts
  * @Description:
  */
 
@@ -43,4 +43,11 @@ export function formatUrl(url: string, params: { [key: string]: any }) {
 		formatParams.push(`${key}=${params[key]}`)
 	})
 	return `${url}?${formatParams.join('&')}`
+}
+
+export function timeCallStr() {
+	const hour: number = new Date().getHours()
+	if (hour < 12) return '早上好'
+	if (hour < 18) return '下午好'
+	return '晚上好'
 }

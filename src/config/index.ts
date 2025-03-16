@@ -11,6 +11,8 @@ export const HOME_URL: string = '/home/index'
 
 export const LOGIN_URL: string = '/login/index'
 
+export const USER_URL: string = '/accountAdd/index'
+
 export const POSITION_MAP: { [key: string]: string } = {
 	Boss: '老板',
 	Manager: '经理',

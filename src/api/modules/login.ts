@@ -9,3 +9,7 @@ export const loginServer = async (params: Login.LoginServerParams) => {
 export const registerServer = async (params: Login.LoginServerParams) => {
 	return axios.get(formatUrl('/auth/register', params)).then(res => res.data)
 }
+
+export const logoutServer = async () => {
+	return axios.get('/auth/logout').then(res => res.data)
+}

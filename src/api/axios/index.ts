@@ -1,15 +1,13 @@
 /*
  * @Author: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
  * @Date: 2024-12-09 16:28:24
- * @LastEditors: V_JNNJIELU-PCGP\v_jnnjieluo v_jnnjieluo@tencent.com
- * @LastEditTime: 2025-01-17 11:05:49
- * @FilePath: \Vue3-ts\src\api\axios\index.ts
+ * @LastEditors: Sakura 1430008132@qq.com
+ * @LastEditTime: 2025-02-25 18:56:34
+ * @FilePath: \Vue3-TS\src\api\axios\index.ts
  * @Description:
  */
 import axios, { Axios } from 'axios'
 import { useUserStore } from '@/stores/modules/user'
-import { useRouter } from 'vue-router'
-import { LOGIN_URL } from '@/config'
 
 const instance: Axios = axios.create({
 	baseURL: '/api', // 这里直接配置服务器请求地址(http://localhose:3000)代表直接请求, 会产生跨域问题
@@ -25,7 +23,7 @@ instance.interceptors.request.use(
 		config.headers.set('token', userStore.token)
 		return config
 	},
-	function (error) {
+	error => {
 		// 对请求错误做些什么
 		return Promise.reject(error)
 	}
@@ -41,18 +39,22 @@ instance.interceptors.response.use(
 			headers,
 			request
 		}
-		if (data.code !== 200) {
-			ElMessage.error(data?.msg || '服务错误, 请稍后重试')
-			return Promise.reject(data || '服务错误, 请稍后重试')
+		// 响应头中存在新token则保存新token, 实现token无感刷新
+		if (headers.new_token) {
+			const userStore = useUserStore()
+			userStore.setToken(headers.new_token)
 		}
+
 		// token失效或没有登录凭证
 		if (data.code === 401) {
 			const userStore = useUserStore()
-			const router = useRouter()
 			userStore.setToken('')
-			router.replace(LOGIN_URL)
 			ElMessage.error(data.msg)
 			return Promise.reject(data)
+		}
+		if (data.code !== 200) {
+			ElMessage.error(data?.msg || '服务错误, 请稍后重试')
+			return Promise.reject(data || '服务错误, 请稍后重试')
 		}
 		return {
 			resultConfig,

@@ -17,3 +17,7 @@ export const editUser = (params: User.EditUserParams) => {
 export const delUser = (params: string[]) => {
 	return axios.post(`/user/del`, params)
 }
+
+export const getUserInfoByToken = (): Promise<User.UserItem> => {
+	return axios.get('/user/infoByToken').then(res => res.data)
+}

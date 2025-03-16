@@ -65,6 +65,7 @@ import { useUserStore } from '@/stores/modules/user'
 import { initDynamicRouter } from '@/routers/modules/dynamicRouter'
 import { HOME_URL } from '@/config'
 import { useRouter } from 'vue-router'
+import { timeCallStr } from '@/utils/util'
 
 const router = useRouter()
 const form = reactive<Login.LoginServerParams>({
@@ -98,6 +99,11 @@ const login = async () => {
 	userStore.setToken(token)
 	// 初始化路由
 	await initDynamicRouter()
+	ElNotification({
+		title: '登录成功',
+		message: `${timeCallStr()}, Sakura`,
+		type: 'success'
+	})
 	router.push(HOME_URL)
 }
 </script>
